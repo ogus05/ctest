@@ -28,22 +28,30 @@ int _tmain(int argc, TCHAR *argv[]){
 
 TCHAR cmdString[STR_LEN];
 TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
-TCHAR seps[] = _T(",\t\n");
+TCHAR seps[] = _T(" ,\t\n");
+TCHAR cmdNext[STR_LEN]; 
 
 int CmdProcessing(void){
     _fputts(_T("Best command prompt>> "),stdout);
     _getts(cmdString);
     TCHAR* token = _tcstok(cmdString, seps);
-    TCHAR option[CMD_TOKEN_NUM][STR_LEN];
+    TCHAR options[CMD_TOKEN_NUM][STR_LEN];
     int tokenNum = 0;
     int optionNum = 0;
-    while(token != NULL){
+    while(TRUE){
         if(token[0] == '/'){
-            _tcscpy(option[optionNum++], StrLower(token));
+            _tcscpy(options[optionNum++], StrLower(token));
         } else{
             _tcscpy(cmdTokenList[tokenNum++], StrLower(token));
         }
         token = _tcstok(NULL, seps);
+        if(token == NULL){
+            break;
+        }
+        else{
+            _tcscat(cmdNext,token);
+            _tcscat(cmdNext,_T(" "));
+        }
     }
     if(!_tcscmp(cmdTokenList[0],_T("exit"))){
         return TRUE;
@@ -56,8 +64,10 @@ int CmdProcessing(void){
         si.dwY = 200;
         si.dwXSize = 300;
         si.dwYSize = 200;
-        TCHAR* command = _T("main.exe ");
-        _tcscat(command, _tcstok(cmdString))
+        TCHAR command[STR_LEN] = _T("main.exe ");
+        _tcscat(command, cmdNext);
+        _tprintf(_T("%s"),command);
+        TCHAR* tokenBundle = cmdTokenList[1];
         CreateProcess(
             NULL, command, NULL,NULL, TRUE,
             CREATE_NEW_CONSOLE, NULL, NULL,
