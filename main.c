@@ -12,10 +12,12 @@ TCHAR ERR_CMD[] = _T("'%s'는 실행할 수 있는  프로그램이 아닙니다. \n");
 int CmdProcessing(void);
 TCHAR * StrLower(TCHAR *);
 
-
 int _tmain(int argc, TCHAR *argv[]){
     _tsetlocale(LC_ALL,_T("Korean"));
     DWORD isExit;
+    for (size_t i = 0; i < argc; i++){
+        _tprintf(_T("%d = %s\n"),i,argv[i]);
+    }
     while(1){
         isExit = CmdProcessing();
         if(isExit == TRUE){
@@ -29,45 +31,37 @@ int _tmain(int argc, TCHAR *argv[]){
 TCHAR cmdString[STR_LEN];
 TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
 TCHAR seps[] = _T(" ,\t\n");
-TCHAR cmdNext[STR_LEN]; 
+
+TCHAR* CmdOptions(TCHAR command[STR_LEN], int tokenNum){
+    for(int i = 1;i<tokenNum; i++){
+        _tcscat(command,_T(" "));
+        _tcscat(command,cmdTokenList[i]);
+    }
+}
 
 int CmdProcessing(void){
     _fputts(_T("Best command prompt>> "),stdout);
     _getts(cmdString);
     TCHAR* token = _tcstok(cmdString, seps);
-    TCHAR options[CMD_TOKEN_NUM][STR_LEN];
+    TCHAR option[CMD_TOKEN_NUM][STR_LEN];
     int tokenNum = 0;
-    int optionNum = 0;
-    while(TRUE){
-        if(token[0] == '/'){
-            _tcscpy(options[optionNum++], StrLower(token));
-        } else{
-            _tcscpy(cmdTokenList[tokenNum++], StrLower(token));
-        }
+    while(token != NULL){
+        _tcscpy(cmdTokenList[tokenNum++], StrLower(token));
         token = _tcstok(NULL, seps);
-        if(token == NULL){
-            break;
-        }
-        else{
-            _tcscat(cmdNext,token);
-            _tcscat(cmdNext,_T(" "));
-        }
     }
     if(!_tcscmp(cmdTokenList[0],_T("exit"))){
         return TRUE;
     } else if(!_tcscmp(cmdTokenList[0],_T("start"))){
         STARTUPINFO si = {0,};
         PROCESS_INFORMATION pi;
-        si.cb = sizeof(si);
+        si.cb = sizeof(si); 
         si.dwFlags = STARTF_USEPOSITION | STARTF_USESIZE;
         si.dwX = 100;
         si.dwY = 200;
         si.dwXSize = 300;
         si.dwYSize = 200;
-        TCHAR command[STR_LEN] = _T("main.exe ");
-        _tcscat(command, cmdNext);
-        _tprintf(_T("%s"),command);
-        TCHAR* tokenBundle = cmdTokenList[1];
+        TCHAR command[STR_LEN] = _T("main.exe");
+        CmdOptions(command, tokenNum);
         CreateProcess(
             NULL, command, NULL,NULL, TRUE,
             CREATE_NEW_CONSOLE, NULL, NULL,
