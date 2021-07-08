@@ -14,8 +14,8 @@
 
     "tasks": [
         {
-            "label": "save and compile for C",
-            "command": "gcc",
+            "label": "save and compile for C++",
+            "command": "g++",
             "args": [
                 "-g",
                 "${file}",
@@ -49,7 +49,7 @@
                 "isDefault": true
             },
             "dependsOn": [
-                "save and compile for C"
+                "save and compile for C++"
             ],
             "args": [
                 "/C",
