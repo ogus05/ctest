@@ -1,18 +1,9 @@
 #include <stdio.h>
-#include <string.h>
-#include <windows.h>
 #include <tchar.h>
+#include <windows.h>
 
-TCHAR op[100];
-
-void func1(int num){
-    TCHAR* res;
-    res = op;
-    res = _T(" ");
+int main(int argc, char** argv){
+    DWORD a = 10;
+    LPVOID b = (LPVOID)a;
+    _tprintf(_T("%d"),(DWORD)b);
 }
-
-int _tmain(int argc, TCHAR* argv[]){
-    func1(2);
-    _tprintf("%s",op);
-    return 0;
-} 

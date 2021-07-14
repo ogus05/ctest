@@ -10,15 +10,22 @@
 TCHAR ERR_CMD[] = _T("'%s'는 실행할 수 있는  프로그램이 아닙니다. \n");
 
 int CmdProcessing(void);
-TCHAR * StrLower(TCHAR *);
+TCHAR* StrLower(TCHAR *);
+void CmdInput(void);
+TCHAR cmdString[STR_LEN];
 
 int _tmain(int argc, TCHAR *argv[]){
     _tsetlocale(LC_ALL,_T("Korean"));
     DWORD isExit;
-    for (size_t i = 0; i < argc; i++){
-        _tprintf(_T("%d = %s\n"),i,argv[i]);
+    if(argc != 1){
+        for(int i = 1;i<argc;i++){
+            _tcscat(cmdString,argv[i]);
+            _tcscat(cmdString,_T(" "));
+        }
+        CmdProcessing();
     }
     while(1){
+        CmdInput();
         isExit = CmdProcessing();
         if(isExit == TRUE){
             _fputts(_T("명령어 처리를 종료합니다. \n"),stdout);
@@ -28,22 +35,17 @@ int _tmain(int argc, TCHAR *argv[]){
     return 0;
 }
 
-TCHAR cmdString[STR_LEN];
+
 TCHAR cmdTokenList[CMD_TOKEN_NUM][STR_LEN];
 TCHAR seps[] = _T(" ,\t\n");
 
-TCHAR* CmdOptions(TCHAR command[STR_LEN], int tokenNum){
-    for(int i = 1;i<tokenNum; i++){
-        _tcscat(command,_T(" "));
-        _tcscat(command,cmdTokenList[i]);
-    }
+void CmdInput(void){
+    _fputts(_T("Best command prompt>> "),stdout);
+    _getts(cmdString);
 }
 
 int CmdProcessing(void){
-    _fputts(_T("Best command prompt>> "),stdout);
-    _getts(cmdString);
     TCHAR* token = _tcstok(cmdString, seps);
-    TCHAR option[CMD_TOKEN_NUM][STR_LEN];
     int tokenNum = 0;
     while(token != NULL){
         _tcscpy(cmdTokenList[tokenNum++], StrLower(token));
@@ -61,14 +63,13 @@ int CmdProcessing(void){
         si.dwXSize = 300;
         si.dwYSize = 200;
         TCHAR command[STR_LEN] = _T("main.exe");
-        CmdOptions(command, tokenNum);
         CreateProcess(
             NULL, command, NULL,NULL, TRUE,
             CREATE_NEW_CONSOLE, NULL, NULL,
             &si, &pi
         );
-    } else if(!_tcscmp(cmdTokenList[0],_T("명령어2"))){
-
+    } else if(!_tcscmp(cmdTokenList[0],_T("dir"))){
+         
     } else{
         STARTUPINFO si = {0,};
         PROCESS_INFORMATION pi;

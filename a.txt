@@ -1,0 +1,13 @@
+Get started with our sample data sets
+
+If you don¡¯t have any data for your MongoDB Atlas database, try our sample data sets. You can use these preloaded data collections to quickly get started experimenting with data in MongoDB.
+
+Here are a few examples of what you can do with our sample data sets:
+Calculate the average length of a bike share ride
+Find the most popular vacation destinations
+Run an aggregation pipeline to pick a fun film for movie night
+To use the sample data sets, you must first create your Atlas database.
+If you're not ready to create your Atlas database, learn more about sample data here.
+
+Think Big, Go Far,
+The MongoDB Team
